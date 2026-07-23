@@ -711,7 +711,7 @@ function getRef() {
   return params.get('ref') || params.get('utm_source') || null;
 }
 
-function enviarFormulario() {
+async function enviarFormulario() {
   const nome = document.getElementById('campo-nome').value.trim();
   const wpp = document.getElementById('campo-wpp').value.trim();
   const email = document.getElementById('campo-email').value.trim();
@@ -722,18 +722,41 @@ function enviarFormulario() {
   if (!email || !email.includes('@')) { alert('E-mail inválido — confere aí!'); return; }
 
   const agora = new Date();
-  const data = agora.toLocaleDateString('pt-BR');
-  const hora = agora.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-  const ref = getRef();
+  const dataFormatada = agora.toLocaleDateString('pt-BR') + ' às ' + agora.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+  const ref = getRef() || 'Direto';
 
+  // Salvar no Airtable
+  try {
+    await fetch('https://api.airtable.com/v0/appCaeHO5q0WXYuoz/tbl859uVE3oZTx8wp', {
+      method: 'POST',
+      headers: {
+        'Authorization': 'Bearer pat4imq1pZn4Ja72G.285624a762401ba7040cec009b7595671af03bff374164e0a550a32c84077474',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        fields: {
+          'Nome': nome,
+          'WhatsApp': wpp,
+          'Email': email,
+          'Instagram': ig || '',
+          'Canal de Origem': ref,
+          'Data': agora.toISOString().split('T')[0]
+        }
+      })
+    });
+  } catch(e) {
+    console.error('Erro Airtable:', e);
+  }
+
+  // Notificar via WhatsApp
   const msg = encodeURIComponent(
     `💅 NOVA LEAD — Lista VIP WalkNail\n\n` +
     `Nome: ${nome}\n` +
     `WhatsApp: ${wpp}\n` +
     `E-mail: ${email}\n` +
     (ig ? `Instagram: ${ig}\n` : '') +
-    (ref ? `Origem: ${ref}\n` : '') +
-    `Data: ${data} às ${hora}`
+    `Origem: ${ref}\n` +
+    `Data: ${dataFormatada}`
   );
 
   window.open(`https://wa.me/5514998472888?text=${msg}`, '_blank');
