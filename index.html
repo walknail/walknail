@@ -485,15 +485,16 @@
   /* SUCESSO */
   .sucesso-msg {
     display: none;
-    background: rgba(233,30,140,0.1);
-    border: 1px solid var(--rosa);
-    padding: 2rem;
+    background: var(--rosa);
+    border: none;
+    padding: 2.5rem 2rem;
     text-align: center;
+    border-radius: 4px;
   }
   .sucesso-msg.ativo { display: block; }
-  .sucesso-emoji { font-size: 2rem; margin-bottom: 0.5rem; }
-  .sucesso-titulo { font-weight: 700; font-size: 1.1rem; margin-bottom: 0.5rem; }
-  .sucesso-texto { font-size: 0.9rem; color: rgba(255,255,255,0.6); }
+  .sucesso-emoji { font-size: 2.5rem; margin-bottom: 0.75rem; }
+  .sucesso-titulo { font-weight: 700; font-size: 1.2rem; margin-bottom: 0.5rem; color: white; }
+  .sucesso-texto { font-size: 1rem; color: rgba(255,255,255,0.9); line-height: 1.6; }
 
   /* FOOTER */
   footer {
@@ -686,10 +687,10 @@
     <!-- MENSAGEM DE SUCESSO -->
     <div class="sucesso-msg" id="sucesso">
       <p class="sucesso-emoji">💅</p>
-      <p class="sucesso-titulo">Você está dentro!</p>
+      <p class="sucesso-titulo">Dados enviados com sucesso!</p>
       <p class="sucesso-texto">
-        Avisamos você antes de todo mundo quando o WalkNail lançar.<br>
-        Agora é só não parar — porque você nunca parou mesmo.
+        Em breve entraremos em contato.<br>
+        Bem-vinda ao time WalkNail!
       </p>
     </div>
 
@@ -747,19 +748,6 @@ async function enviarFormulario() {
   } catch(e) {
     console.error('Erro Airtable:', e);
   }
-
-  // Notificar via WhatsApp
-  const msg = encodeURIComponent(
-    `💅 NOVA LEAD — Lista VIP WalkNail\n\n` +
-    `Nome: ${nome}\n` +
-    `WhatsApp: ${wpp}\n` +
-    `E-mail: ${email}\n` +
-    (ig ? `Instagram: ${ig}\n` : '') +
-    `Origem: ${ref}\n` +
-    `Data: ${dataFormatada}`
-  );
-
-  window.open(`https://wa.me/5514998472888?text=${msg}`, '_blank');
 
   document.getElementById('form-container').style.display = 'none';
   document.getElementById('sucesso').classList.add('ativo');
